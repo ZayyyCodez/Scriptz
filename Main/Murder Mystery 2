@@ -1,17 +1,4 @@
---[[
->info of this Mm2 Script<
-So this script make for testing and example for some function of part for beginner or even advanced,
-This is Open source Script is free to modify or edit and you guys don't need to give me credit for this work too even if you steal it or you are skid so I will anyway don't care
-___________
-I only learn Lua for 2-3 years and have some other knowledge like Luau, LuaJit, Lua FiveM and some other,
-forgot to say that I'm only just 15 year old
-___________
-This Mm2 Script is just a simple code and function and I don't have some ideas too so I only make just a simple function and thank you for use this open source script, Thanks for support <3
--- https://github.com/Backlostunking/Open-Source/tree/main
---> free webhooks script: https://github.com/Backlostunking/Open-Source/blob/main/Webhooks
-Enjoy using this open source script and my discord username: scriptermrbacon
-]]
---[[
+
 ignore free Hidden properties
 -- on everywhere (I think):
 RobloxLocked,
@@ -31,10 +18,8 @@ RemoveReplicationFocusPosition,
 ScriptSecurityError,
 Guest,
 IsFriendsWith, isFriendsWith, IsBestFriendsWith, GetFriendStatus, GetFriendsOnline, FriendStatusChanged, RemoteFriendRequestSignal, RequestFriendship, RevokeFriendship
---DM me on discord if you need more
 ]]
 --[[
-Free cloneref script project by ScripterMrbacon
 This for some advanced exploit who need this function for some executor that don't have function cloneref in environment (don't support cloneref function if say as understand)
 local cloneref = function(instance)
 	if typeof(instance) ~= "Instance" then return instance end
