@@ -1,10 +1,3 @@
--- comment by fxengif : thank you guys for support!
-
--- comment by fxengif : it actually been 6 months as I don't making script in roblox
-
--- comment by fxengif : if you want to help us add more features in this script then DM me on discord: @fxengif
-
--- comment by fxengif : there actually has a lot of while loop used so the performance can be badly but you know it fine
 
 do --/* FTF */--
 local function c_caller(t, f, cf, ...)
