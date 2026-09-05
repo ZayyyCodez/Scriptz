@@ -1,4 +1,4 @@
-local way = 'https://github.com/Backlostunking/Open-Source/raw/refs/heads/main/Flee-the-Facility.luau'
+local way = 'https://raw.githubusercontent.com/ZayyyCodez/Scriptz/refs/heads/main/Main/Flee-the-Facility.luau'
 local request, loadstring, setidentity, getidentity, ugc = http_request or request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request), (loadstring or load), (setidentity or setthreadidentity) or (setthreadcontext or set_thread_context), (getidentity or getthreadidentity) or (getthreadcontext or get_thread_context), game or Game
 local ide = getidentity and getidentity()
 if type(ide)=='number' and ide<6 then pcall(setidentity,8) end
