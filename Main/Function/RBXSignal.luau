@@ -1,22 +1,4 @@
--- version 0.09 [beta]
---[[
--- Quick Example:
-hook_connection, restore_connection, is_connection_hooked, get_hook_connections = loadstring(game:HttpGet("https://github.com/Backlostunking/Open-Source/raw/refs/heads/main/Function/RBXSignal.luau"))()
-for i, r in pairs(game:GetDescendants()) do
-    if r:IsA('RemoteEvent') then
-        local TargetSignal, signal = r.OnClientEvent, 'OnClientEvent'
-        local already_hook = is_connection_hooked(r, signal)
-        -- if already_hook then continue end
-        print("Found:", i, r:GetFullName(), "Already Hook:", already_hook)
-        local signal, state = hook_connection(r, signal, TargetSignal, function(...)
-            print(r.Name, "Was Called with arg Passed:", ...)
-        end)
-        print(`Hook: {signal}, Success: {state}`)
-        -- local success = restore_connection(r, signal)
-        -- print("Restore:", signal, state, success)
-    end
-end
-]]
+
 local t, f = true, false
 local genv = (type(getgenv) == "function" and getgenv()) or _G
 genv._connection_hooks = genv._connection_hooks or {}
