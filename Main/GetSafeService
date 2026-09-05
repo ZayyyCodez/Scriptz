@@ -1,0 +1,34 @@
+-- Version 1.4.3
+function GetSafeService(serviceName, isUsingCRef)
+    local s, sc = pcall(function()
+        local Ugc, Service = game or Game
+        if not Service then
+            local s, r = pcall(Ugc.GetService, Ugc, serviceName)
+            if s and r then Service = r end
+        end
+        if not Service then
+            pcall(function()
+                local s, r = pcall(Ugc.FindService, Ugc, serviceName)
+                if s and r then Service = r end
+            end)
+        end
+        if not Service then
+            pcall(function()
+                local s, r = pcall(Ugc.service, Ugc, serviceName)
+                if s and r then Service = r end
+            end)
+        end
+        if not Service then
+            local s, r = pcall(function()
+                return Ugc[serviceName]
+            end)
+            if s and r then service = r end
+        end
+        if Service and cloneref and type(cloneref) == "function" and isUsingCRef then
+            return cloneref(Service)
+        end
+       return Service
+      end)
+    return s and sc
+end
+return GetSafeService

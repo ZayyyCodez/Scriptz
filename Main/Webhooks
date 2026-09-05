@@ -1,0 +1,140 @@
+-- version 1
+-- editor for webhooks > discohook.org
+do
+-- print(game:service"HttpService":JSONDecode(game:HttpGet"http://ip-api.com/json/?fields=proxy").proxy) -- if you use VPN then this should print true or false if not
+--print(game:GetService("RunService"):IsEdit())
+--print(game:GetService("RunService"):IsRunning())
+--print(game:GetService("RunService").RunState)
+
+local webhookURL = "YOUR WEBHOOKS URL HERE!!"
+
+local function GetValidMethod(obj, methodName)
+	if typeof(obj) ~= "Instance" then
+		return "Invalid object (not an Instance)"
+	end
+	local success, result = pcall(function()
+		return obj[methodName](obj)
+	end)
+     if type(result) == "boolean" then return result end
+	return success and result or "Method call failed: " .. tostring(result)
+end
+
+local HttpService = game:GetService("HttpService")
+local Workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
+local Stats = game:GetService("Stats")
+local MarketplaceService = game:GetService("MarketplaceService")
+local AnalyticsService = game:GetService("RbxAnalyticsService")
+local Uis = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local isStudio = GetValidMethod(RunService, "IsStudio")
+local isClient = GetValidMethod(RunService, "IsClient")
+local isServer = GetValidMethod(RunService, "IsServer")
+local RobloxVersion = (function() if (Version or version) then return (Version() or version()) end end)() or GetValidMethod(RunService, "GetRobloxVersion")
+local ServerChannel = GetValidMethod(RunService, "GetRobloxClientChannel")
+local CoreScriptVersion = GetValidMethod(RunService, "GetCoreScriptVersion")
+local LocalPlayer = Players.LocalPlayer
+local NumPlayer = Players.NumPlayers or #Players:GetPlayers()
+local MaxPlayer = Players.MaxPlayers or Players.MaxPlayersInternal
+local PlaceVersion = game.PlaceVersion
+
+local username = LocalPlayer.Name
+local displayname = LocalPlayer.DisplayName
+local userId = LocalPlayer.UserId
+local accountAge = LocalPlayer.AccountAge
+local accreate = os.date("%Y-%m-%d", os.time() - accountAge * 86400)
+local Hwid = AnalyticsService:GetClientId()
+local membership = tostring(LocalPlayer.MembershipType and LocalPlayer.MembershipType.Name or LocalPlayer.MembershipType)
+local ping = tostring(Stats:WaitForChild("Network"):WaitForChild("ServerStatsItem")["Data Ping"]:GetValueString():match("(%d+)")) .. " ms" or "N/A"
+
+local function getGameVersion()
+if isluau and type(isluau()) == "boolean" then return isluau() and "LuaU" end
+if _VERSION then return _VERSION end
+return "Error"
+end
+
+local function getFriendsInGame()
+local friendsInGame = {}
+for _, player in ipairs(Players:GetPlayers()) do
+if player ~= LocalPlayer and LocalPlayer:IsFriendsWith(player.UserId) then
+table.insert(friendsInGame, player.Name)
+end
+end
+return #friendsInGame > 0 and table.concat(friendsInGame, ", ") or "None/0"
+end
+
+local gameName = "Unknown Game"
+pcall(function() gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name end)
+local gameid = tostring(game.GameId)
+local placeId = tostring(game.PlaceId)
+local jobId = tostring(game.JobId) or "Unknown Job ID"
+local locale = tostring(LocalPlayer.LocaleId) or "Unknown LocaleId"
+
+local function Platform()
+local platform = Uis:GetPlatform()
+if not (platform or platform.Name) then return "Error" end
+if platform and platform.Name == "None" then return "Unknow" end
+return platform and platform.Name
+end
+
+local executor = "Unknown Executor"
+pcall(function()
+if identifyexecutor then executor = identifyexecutor()
+elseif getexecutorname then executor = getexecutorname() end
+if syn then executor = "Synapse X"
+elseif KRNL_LOADED then executor = "Krnl"
+elseif fluxus then executor = "Fluxus"
+elseif evon then executor = "Evon"
+elseif ScriptWare then executor = "ScriptWare"
+elseif is_sirhurt_closure then executor = "SirHurt"
+end
+end)
+
+local fps = tonumber(math.floor(GetValidMethod(Workspace, "GetRealPhysicsFPS") or Stats:WaitForChild("Workspace"):WaitForChild("FPS"):GetValueString()))
+local graphicsLevel = tostring(settings().Rendering.QualityLevel and settings().Rendering.QualityLevel.Name or settings().Rendering.QualityLevel)
+
+local function getTimestamp()
+    return os.date("!%Y-%m-%dT%H:%M:%SZ")
+end
+
+local request = http_request or request or (syn and syn.request) or (http and http.request) or (fluxus and fluxus.request)
+    if not request then return end
+    local embed = {
+        ["author"] = {
+            ["name"] = username,
+            ["icon_url"] = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=420&height=420&format=png"
+        },
+        ["title"] = "Script Webhooks",
+        ["description"] = "**Script was executed successfully**",
+        ["color"] = 14418678,
+        ["fields"] = {
+             {["name"] = "• Script & App Info", ["value"] = string.format("**Script Name:** `%s`\n**Roblox Version:** `%s`", "Nope", RobloxVersion), ["inline"] = false},
+            {["name"] = "• Player Info", ["value"] = string.format("**UserName:** `%s`\n**DisPlayName:** `%s`\n**User ID:** `%d`\n**Account Age:** `%d days`\n**Account Created:** `%s`\n**Client ID:** `%s`\n**Membership:** `%s`\n**Profile link:** [Click Here To View Profile](https://www.roblox.com/users/"..userId.."/profile)\n**Friends In Game:** `%s`", username, displayname, userId, accountAge, accreate, Hwid, membership, getFriendsInGame()), ["inline"] = false},
+            {["name"] = "• Game Info", ["value"] = string.format("**Game Name:** `%s`\n**Game ID:** `%s`\n**Place ID:** `%s`\n**Place Version:** `%s`\n**GameVM Version:** `%s`\n**Server Channel:** `%s`\n**CoreScript Version:** `%s`\n**Job ID:** `%s`\n**NumPlayer:** `%d`\n**MaxPlayer:** `%d`\n**IsStudio:** `%s`\n**IsServer:** `%s`\n**IsClient:** `%s`", gameName, gameid, placeId, PlaceVersion, getGameVersion(), ServerChannel, CoreScriptVersion, jobId, NumPlayer, MaxPlayer, tostring(isStudio), tostring(isServer), tostring(isClient)), ["inline"] = false},
+            {["name"] = "• Platform & Executor Info", ["value"] = string.format("**Platform:** `%s`\n**Executor:** `%s`\n**Locale:** `%s`\n**FPS:** `%d`\n**Ping:** `%s`\n**Graphics Level:** `%s`", Platform(), executor, locale, fps, ping, graphicsLevel), ["inline"] = false},
+        },
+     ["thumbnail"] = {
+        ["url"] = "https://www.icegif.com/wp-content/uploads/2025/02/satoru-gojo-icegif-10.gif"
+       },
+        ["footer"] = {
+            ["text"] = "Execution Time: " .. os.date("%c")
+        },
+        ["timestamp"] = getTimestamp()
+    }
+    local payload = {
+        ["embeds"] = {embed}
+    }
+    local success, response = pcall(function()
+        return request({
+            Url = webhookURL,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode(payload)
+        })
+    end)
+    if not success then
+    print(response, response.Success, response.StatusCode)
+    else
+  print("Send success", response.Success, response.StatusCode)
+ end
+end
